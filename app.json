@@ -1,8 +1,8 @@
 {
   "expo": {
     "name": "BabyCare",
-    "slug": "Baby-Care-app",
-    "version": "1.0.0",
+    "slug": "Baby-Care",
+    "version": "1.0.1",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
@@ -11,32 +11,36 @@
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
-    "assetBundlePatterns": ["**/*"],
-
+    "assetBundlePatterns": [
+      "**/*"
+    ],
     "ios": {
       "supportsTablet": true,
       "infoPlist": {
         "NSCameraUsageDescription": "This app needs camera access to take photos.",
         "NSUserNotificationUsageDescription": "This app uses notifications to alert you."
-      }
+      },
+      "bundleIdentifier": "com.vishwaraj2212.ingredientscanner"
     },
-
     "android": {
+      "package":"com.vishwaraj2212.ingredientscanner",
+      "versionCode" : 2 ,
       "adaptiveIcon": {
         "foregroundImage": "./assets/icon.png",
         "backgroundColor": "#ffffff"
       },
       "permissions": [
         "CAMERA",
-        "NOTIFICATIONS"
-      ]
+        "NOTIFICATIONS",
+        "android.permission.CAMERA",
+        "android.permission.RECORD_AUDIO"
+      ],
+      "package": "com.vishwaraj2212.ingredientscanner"
     },
-
     "plugins": [
       "expo-camera",
       "expo-notifications"
     ],
-
     "extra": {
       "eas": {
         "projectId": "REPLACE-WITH-YOUR-EAS-PROJECT-ID"
