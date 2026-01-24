@@ -1,154 +1,75 @@
-import { useEffect, useState } from 'react';
-import { StyleSheet, Text, View, Button, ScrollView, ActivityIndicator } from 'react-native';
-import { CameraView, useCameraPermissions } from 'expo-camera';
-import { StatusBar } from 'expo-status-bar';
+import 'react-native-gesture-handler';
+
+import React, { useEffect } from 'react';
+import { NavigationContainer } from '@react-navigation/native';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import * as Notifications from 'expo-notifications';
+
+import LoginScreen from './screens/LoginScreen';
+import HomeScreen from './screens/HomeScreen';
+import CameraScreen from './screens/CameraScreen';
+import NotificationScreen from './screens/NotificationScreen';
+import AIHelperScreen from './screens/AIHelperScreen';
+
+const Stack = createNativeStackNavigator();
+
+/**
+ * Notification handler (required for SDK 54)
+ */
+Notifications.setNotificationHandler({
+  handleNotification: async () => ({
+    shouldShowAlert: true,
+    shouldPlaySound: false,
+    shouldSetBadge: false,
+  }),
+});
 
 export default function App() {
-  const [permission, requestPermission] = useCameraPermissions();
-  const [scanning, setScanning] = useState(false);
-  const [barcode, setBarcode] = useState(null);
-  const [ingredients, setIngredients] = useState(null);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(null);
-
-  if (!permission) {
-    return (
-      <View style={styles.center}>
-        <Text>Checking camera permission…</Text>
-      </View>
-    );
-  }
-
-  if (!permission.granted) {
-    return (
-      <View style={styles.center}>
-        <Text style={{ marginBottom: 10 }}>
-          Camera access is required to scan barcodes
-        </Text>
-        <Button title="Grant permission" onPress={requestPermission} />
-      </View>
-    );
-  }
-
-  async function onBarcodeScanned({ data }) {
-    setScanning(false);
-    setBarcode(data);
-    setIngredients(null);
-    setError(null);
-    await fetchIngredients(data);
-  }
-
-  async function fetchIngredients(code) {
-    try {
-      setLoading(true);
-
-      let res = await fetch(
-        `https://world.openbeautyfacts.org/api/v0/product/${code}.json`
-      );
-      let json = await res.json();
-
-      if (json.status === 1 && json.product?.ingredients_text) {
-        setIngredients(json.product.ingredients_text);
-        return;
-      }
-
-      res = await fetch(
-        `https://world.openfoodfacts.org/api/v0/product/${code}.json`
-      );
-      json = await res.json();
-
-      if (json.status === 1 && json.product?.ingredients_text) {
-        setIngredients(json.product.ingredients_text);
-        return;
-      }
-
-      setError('No ingredient data found for this barcode.');
-    } catch (e) {
-      setError('Failed to fetch product data.');
-    } finally {
-      setLoading(false);
-    }
-  }
+  useEffect(() => {
+    // Ask notification permission on app start
+    Notifications.requestPermissionsAsync();
+  }, []);
 
   return (
-    <ScrollView contentContainerStyle={styles.container}>
-      <StatusBar style="auto" />
-
-      <Text style={styles.title}>Ingredient Scanner</Text>
-
-      {!scanning && (
-        <Button title="Scan barcode" onPress={() => setScanning(true)} />
-      )}
-
-      {scanning && (
-        <CameraView
-          style={styles.camera}
-          barcodeScannerSettings={{
-            barcodeTypes: ['ean13', 'ean8', 'upc_a', 'upc_e'],
-          }}
-          onBarcodeScanned={scanning ? onBarcodeScanned : undefined}
+    <NavigationContainer>
+      <Stack.Navigator
+        initialRouteName="Login"
+        screenOptions={{
+          headerTitleAlign: 'center',
+        }}
+      >
+        {/* Login */}
+        <Stack.Screen
+          name="Login"
+          component={LoginScreen}
+          options={{ headerShown: false }}
         />
-      )}
 
-      {loading && <ActivityIndicator size="large" style={{ marginTop: 20 }} />}
+        {/* Main App */}
+        <Stack.Screen
+          name="Home"
+          component={HomeScreen}
+          options={{ title: 'Classic App' }}
+        />
 
-      {barcode && (
-        <Text style={styles.label}>Barcode: {barcode}</Text>
-      )}
+        <Stack.Screen
+          name="Camera"
+          component={CameraScreen}
+          options={{ title: 'Camera' }}
+        />
 
-      {ingredients && (
-        <View style={styles.card}>
-          <Text style={styles.cardTitle}>Ingredients</Text>
-          <Text>{ingredients}</Text>
-        </View>
-      )}
+        <Stack.Screen
+          name="Notifications"
+          component={NotificationScreen}
+          options={{ title: 'Notifications' }}
+        />
 
-      {error && (
-        <Text style={styles.error}>{error}</Text>
-      )}
-    </ScrollView>
+        <Stack.Screen
+          name="AI Assistant"
+          component={AIHelperScreen}
+          options={{ title: 'AI Assistant' }}
+        />
+      </Stack.Navigator>
+    </NavigationContainer>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    padding: 20,
-    alignItems: 'center',
-  },
-  center: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  camera: {
-    width: '100%',
-    height: 300,
-    marginTop: 20,
-    borderRadius: 12,
-    overflow: 'hidden',
-  },
-  title: {
-    fontSize: 22,
-    fontWeight: '600',
-    marginBottom: 20,
-  },
-  label: {
-    marginTop: 15,
-    fontWeight: '500',
-  },
-  card: {
-    marginTop: 20,
-    padding: 15,
-    backgroundColor: '#f2f2f2',
-    borderRadius: 10,
-  },
-  cardTitle: {
-    fontWeight: '600',
-    marginBottom: 8,
-  },
-  error: {
-    marginTop: 20,
-    color: 'red',
-    textAlign: 'center',
-  },
-});
