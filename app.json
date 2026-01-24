@@ -1,23 +1,46 @@
 {
   "expo": {
-    "name": "Ingredient Scanner",
-    "slug": "ingredient-scanner",
+    "name": "BabyCare",
+    "slug": "Baby-Care-app",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
     "splash": {
-      "image": "./assets/splash.png",
+      "image": "./assets/icon.png",
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
+    "assetBundlePatterns": ["**/*"],
+
+    "ios": {
+      "supportsTablet": true,
+      "infoPlist": {
+        "NSCameraUsageDescription": "This app needs camera access to take photos.",
+        "NSUserNotificationUsageDescription": "This app uses notifications to alert you."
+      }
+    },
+
     "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/icon.png",
+        "backgroundColor": "#ffffff"
+      },
       "permissions": [
-        "CAMERA"
+        "CAMERA",
+        "NOTIFICATIONS"
       ]
     },
+
     "plugins": [
-      "expo-camera"
-    ]
+      "expo-camera",
+      "expo-notifications"
+    ],
+
+    "extra": {
+      "eas": {
+        "projectId": "REPLACE-WITH-YOUR-EAS-PROJECT-ID"
+      }
+    }
   }
 }
