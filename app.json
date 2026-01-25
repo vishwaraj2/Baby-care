@@ -23,8 +23,8 @@
       "bundleIdentifier": "com.vishwaraj2212.ingredientscanner"
     },
     "android": {
-      "package":"com.vishwaraj2212.ingredientscanner",
-      "versionCode" : 2 ,
+      "package": "com.vishwaraj2212.ingredientscanner",
+      "versionCode": 2,
       "adaptiveIcon": {
         "foregroundImage": "./assets/icon.png",
         "backgroundColor": "#ffffff"
@@ -34,16 +34,16 @@
         "NOTIFICATIONS",
         "android.permission.CAMERA",
         "android.permission.RECORD_AUDIO"
-      ],
-      "package": "com.vishwaraj2212.ingredientscanner"
+      ]
     },
     "plugins": [
       "expo-camera",
       "expo-notifications"
     ],
+    "owner": "vishwaraj2212",
     "extra": {
       "eas": {
-        "projectId": "REPLACE-WITH-YOUR-EAS-PROJECT-ID"
+        "projectId": "d7f9a3a3-eb38-4274-9a49-89e3d19364b6"
       }
     }
   }
